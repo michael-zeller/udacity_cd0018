@@ -1,24 +1,55 @@
 import sys
+import pandas as pd
+from sqlalchemy import create_engine
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+import joblib
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+import nltk
 
+nltk.download('punkt')
+nltk.download('punkt_tab')
+nltk.download('wordnet')
 
 def load_data(database_filepath):
-    pass
+    engine = create_engine('sqlite:///{}'.format(database_filepath))
+ 
+    df = pd.read_sql_table('Messages', engine)
+    X = df['message']
+    Y = df.drop(['id', 'message', 'original', 'genre'], axis=1)
+    category_names = Y.columns
+    return X, Y, category_names
 
 
 def tokenize(text):
-    pass
+    tokens = word_tokenize(text)
+    lemmatizer = WordNetLemmatizer()
+    clean_tokens = [lemmatizer.lemmatize(tok).lower().strip() for tok in tokens]
+    return clean_tokens
 
 
 def build_model():
-    pass
+    pipeline = Pipeline([
+        ('tfidf', TfidfVectorizer(tokenizer=tokenize)),
+        ('clf', MultiOutputClassifier(RandomForestClassifier()))
+    ])
+    return pipeline
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-    pass
+    Y_pred = model.predict(X_test)
+    for i, category in enumerate(category_names):
+        print('Category: {}'.format(category))
+        print(classification_report(Y_test[:, i], Y_pred[:, i]))
 
 
 def save_model(model, model_filepath):
-    pass
+    joblib.dump(model, model_filepath)
 
 
 def main():
