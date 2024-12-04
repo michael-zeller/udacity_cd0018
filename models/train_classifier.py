@@ -45,6 +45,10 @@ def evaluate_model(model, X_test, Y_test, category_names):
     Y_pred = model.predict(X_test)
     for i, category in enumerate(category_names):
         print('Category: {}'.format(category))
+        # TODO: Fix error
+        # File "/workspaces/udacity_cd0018/models/train_classifier.py", line 48, in evaluate_model
+        # print(classification_report(Y_test[:, i], Y_pred[:, i]))
+        #                             ~~~~~~^^^^^^
         print(classification_report(Y_test[:, i], Y_pred[:, i]))
 
 
