@@ -27,8 +27,9 @@ def clean_data(df):
 
     # Convert category values to just numbers 0 or 1
     for column in categories_split:
-        # Set each value to be the last character of the string and convert to numeric
-        categories_split[column] = categories_split[column].str[-1].astype(int)
+        # Set each value to be the last character of the string, convert to numeric, and then to boolean
+        # in some cases related-2 is present and we need to convert it to true
+        categories_split[column] = categories_split[column].str[-1].astype(int).astype(bool)
 
     # Concatenate the original dataframe with the new `categories_split` dataframe
     df = pd.concat([df.drop('categories', axis=1), categories_split], axis=1)
