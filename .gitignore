@@ -1,3 +1,4 @@
 **/DisasterResponse.db
 models/__pycache__/train_classifier.cpython-312.pyc
 notebooks/model.pkl
+models/classifier.pkl
