@@ -43,13 +43,13 @@ def build_model():
 
 def evaluate_model(model, X_test, Y_test, category_names):
     Y_pred = model.predict(X_test)
+    
+    Y_test = Y_test.values
     for i, category in enumerate(category_names):
         print('Category: {}'.format(category))
-        # TODO: Fix error
-        # File "/workspaces/udacity_cd0018/models/train_classifier.py", line 48, in evaluate_model
-        # print(classification_report(Y_test[:, i], Y_pred[:, i]))
-        #                             ~~~~~~^^^^^^
-        print(classification_report(Y_test[:, i], Y_pred[:, i]))
+        my_test = Y_test[:, i]
+        my_pred = Y_pred[:, i]
+        print(classification_report(my_test, my_pred))
 
 
 def save_model(model, model_filepath):
