@@ -2,7 +2,7 @@ import sys
 import pandas as pd
 from sqlalchemy import create_engine
 
-
+# load data from the source csv-files
 def load_data(messages_filepath, categories_filepath):
     
     messages = pd.read_csv(messages_filepath)    
@@ -11,7 +11,7 @@ def load_data(messages_filepath, categories_filepath):
     df =   pd.merge(messages, categories, on='id')
     return df
 
-
+# clean the data
 def clean_data(df):
     # Split the categories column into separate category columns
     categories_split = df['categories'].str.split(';', expand=True)
@@ -38,7 +38,7 @@ def clean_data(df):
     
     return df
 
-
+# save the data to a database
 def save_data(df, database_filename):
     engine = create_engine(f'sqlite:///{database_filename}')
     df.to_sql('Messages', engine, index=False)

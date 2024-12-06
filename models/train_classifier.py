@@ -7,6 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV
 import joblib
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
@@ -16,6 +17,7 @@ nltk.download('punkt')
 nltk.download('punkt_tab')
 nltk.download('wordnet')
 
+# load data from the database
 def load_data(database_filepath):
     engine = create_engine('sqlite:///{}'.format(database_filepath))
  
@@ -25,14 +27,14 @@ def load_data(database_filepath):
     category_names = Y.columns
     return X, Y, category_names
 
-
+# tokenize the text
 def tokenize(text):
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
     clean_tokens = [lemmatizer.lemmatize(tok).lower().strip() for tok in tokens]
     return clean_tokens
 
-
+# build the model
 def build_model():
     pipeline = Pipeline([
         ('tfidf', TfidfVectorizer(tokenizer=tokenize)),
@@ -41,6 +43,19 @@ def build_model():
     return pipeline
 
 
+#  wrap the model in a grid search	
+def wrap_gridSerach(model):
+    
+    parameters = {
+        'clf__estimator__n_estimators': [50, 100],
+        'clf__estimator__min_samples_split': [2, 4]
+    }
+
+    cv = GridSearchCV(model, param_grid=parameters, verbose=3, n_jobs=-1)
+    return cv
+    
+
+# evaluate the model against the test data
 def evaluate_model(model, X_test, Y_test, category_names):
     Y_pred = model.predict(X_test)
     
@@ -51,7 +66,7 @@ def evaluate_model(model, X_test, Y_test, category_names):
         my_pred = Y_pred[:, i]
         print(classification_report(my_test, my_pred))
 
-
+# save the model
 def save_model(model, model_filepath):
     joblib.dump(model, model_filepath)
 
@@ -65,6 +80,10 @@ def main():
         
         print('Building model...')
         model = build_model()
+        
+        # wrap the model in a grid search  
+        # commented out because it takes too long to run and the result is not that much better
+        # model = wrap_gridSerach(model)
         
         print('Training model...')
         print('be patient. can take minutes...')

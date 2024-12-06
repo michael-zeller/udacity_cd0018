@@ -1,5 +1,9 @@
 # Disaster Response Pipeline Project
 
+During disasters a lot of messages are recorded on a lot of topics. This project helps to categorize the messages to speed up the appropriate response.
+
+this project contains the ETL and ML pipelines to process the source-data, train a model for text clasification and a flask-webapp to use the model online.
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
