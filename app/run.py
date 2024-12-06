@@ -11,6 +11,10 @@ from plotly.graph_objs import Bar
 import joblib
 from sqlalchemy import create_engine
 
+import sys
+sys.path.append('../models')  # Add the path to the models directory
+import train_classifier
+
 
 app = Flask(__name__)
 

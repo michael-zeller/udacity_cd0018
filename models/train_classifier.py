@@ -67,6 +67,7 @@ def main():
         model = build_model()
         
         print('Training model...')
+        print('be patient. can take minutes...')
         model.fit(X_train, Y_train)
         
         print('Evaluating model...')
